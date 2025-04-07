@@ -11,9 +11,6 @@ importers:
       '@azure-rest/ai-inference':
         specifier: 1.0.0-beta.6
         version: 1.0.0-beta.6
-      '@googleapis/docs':
-        specifier: ^3.3.3
-        version: 3.3.3(encoding@0.1.13)
       cheerio:
         specifier: ^1.0.0
         version: 1.0.0
@@ -96,10 +93,6 @@ packages:
 
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
-
-  '@googleapis/docs@3.3.3':
-    resolution: {integrity: sha512-9R1YpdR9AYSk/nKFA1phsjLNfYpdLy26vKPTyePbE3qRlwnhOly7e4hQNiADV6N/89nxYytoUYOcEM5nXUquNg==}
-    engines: {node: '>=12.0.0'}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -1237,13 +1230,6 @@ snapshots:
 
   '@gar/promisify@1.1.3':
     optional: true
-
-  '@googleapis/docs@3.3.3(encoding@0.1.13)':
-    dependencies:
-      googleapis-common: 7.2.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
 
   '@isaacs/cliui@8.0.2':
     dependencies:
