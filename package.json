@@ -1,0 +1,33 @@
+{
+  "name": "seoul-youth-house-calendar",
+  "author": {
+    "name": "solrin"
+  },
+  "packageManager": "pnpm@10.7.1",
+  "dependencies": {
+    "@azure-rest/ai-inference": "1.0.0-beta.6",
+    "@googleapis/docs": "^3.3.3",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.7",
+    "googleapis": "^148.0.0",
+    "node-cron": "^3.0.3",
+    "progress": "^2.0.3",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.22",
+    "typeorm-extension": "^3.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@types/node-cron": "^3.0.11",
+    "@types/progress": "^2.0.7",
+    "typescript": "^5.8.3"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "sqlite3"
+    ],
+    "onlyBuiltDependencies": [
+      "sqlite3"
+    ]
+  }
+}
