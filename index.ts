@@ -360,7 +360,9 @@ const run = async (calendarId: string) => {
     cron.schedule("0 12 * * *", () => run(calendarId));
     cron.schedule("0 15 * * *", () => run(calendarId));
     cron.schedule("0 18 * * *", () => run(calendarId));
-})().catch(console.log).finally(async () => {
+})().catch(async (e) => {
+    console.error(e);
+
     await db.dataSource.destroy();
     console.log("Database connection closed");
     process.exit(0);
