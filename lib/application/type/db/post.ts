@@ -14,6 +14,9 @@ export class Post {
     @Column({type: "varchar", length: 64})
     contentHash!: string;
 
+    @Column({type: "varchar", length: 64, nullable: true})
+    attachmentHash?: string;
+
     @Column({type: "datetime", nullable: true})
     applicationStart?: Date;
 
@@ -43,4 +46,6 @@ export interface RawPostType {
     boardId: number,
     nttSj: string,
     content: string,
+    atchFileId: string,
+    attachment: Buffer | null,
 }

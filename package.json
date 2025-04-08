@@ -5,14 +5,13 @@
   },
   "packageManager": "pnpm@10.7.1",
   "dependencies": {
-    "@azure-rest/ai-inference": "1.0.0-beta.6",
-    "@azure/core-auth": "^1.9.0",
+    "@google/genai": "^0.7.0",
     "cheerio": "^1.0.0",
     "dotenv": "^16.4.7",
+    "file-type": "^20.4.1",
     "googleapis": "^148.0.0",
     "node-cron": "^3.0.3",
     "progress": "^2.0.3",
-    "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.22",
     "typeorm-extension": "^3.7.0"
   },

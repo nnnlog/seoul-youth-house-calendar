@@ -16,15 +16,15 @@ import {
 import getAllPosts from "./lib/adaptor/crawl/getAllPosts.js";
 import {Event} from "./lib/application/type/db/event.js";
 import {Setting} from "./lib/application/type/db/setting.js";
-import {Post, RawPostType} from "./lib/application/type/db/post.js";
+import {Post} from "./lib/application/type/db/post.js";
 
 const _addApplicationEvent = async (calendarId: string, post: Post, eventId?: string) => {
     if (!post.applicationStart || !post.applicationEnd) return null;
 
     let event = new Event({
         id: "",
-        start: new Date(post.applicationStart),
-        end: new Date(post.applicationEnd),
+        start: post.applicationStart,
+        end: post.applicationEnd,
         title: `[신청] - ${post.title}`,
         memo: post.memo,
     });
@@ -51,8 +51,8 @@ const _addApprovedEvent = async (calendarId: string, post: Post, eventId?: strin
 
     let event = new Event({
         id: "",
-        start: new Date(post.approvedStart),
-        end: new Date(post.approvedEnd),
+        start: post.approvedStart,
+        end: post.approvedEnd,
         title: `[발표] - ${post.title}`,
         memo: post.memo,
     });
@@ -147,39 +147,59 @@ const init = async () => {
             eventsMap.set(event.id, event);
         });
 
-        // Check if all events are in the database
-        // If there are events of post that are not in the database, create a new event to the calendar
-        for (let post of posts) {
-            if (post.applicationCalendarId !== undefined) {
-                const event = eventsMap.get(post.applicationCalendarId);
-                if (event === undefined && post.applicationStart !== undefined && post.applicationEnd !== undefined) {
+        if (posts.length > 0) {
+            const bar = new ProgressBar("[:bar] :current/:total (:percent) :etas", {
+                total: posts.length,
+                width: 20,
+            });
+
+            // Check if all events are in the database
+            // If there are events of post that are not in the database, create a new event to the calendar
+            for (let post of posts) {
+                if (post.applicationCalendarId !== undefined) {
+                    const event = eventsMap.get(post.applicationCalendarId);
+                    if (event === undefined && post.applicationStart !== undefined && post.applicationEnd !== undefined) {
+                        await _addApplicationEvent(setting.calendarId, post);
+                    } else if (event !== undefined) {
+                        eventsMap.delete(event.id);
+                    }
+                } else if (post.applicationStart !== undefined && post.applicationEnd !== undefined) {
                     await _addApplicationEvent(setting.calendarId, post);
-                } else if (event !== undefined) {
-                    eventsMap.delete(event.id);
                 }
-            } else if (post.applicationStart !== undefined && post.applicationEnd !== undefined) {
-                await _addApplicationEvent(setting.calendarId, post);
-            }
 
-            if (post.approvedCalendarId !== undefined) {
-                const event = eventsMap.get(post.approvedCalendarId);
-                if (event === undefined && post.approvedStart !== undefined && post.approvedEnd !== undefined) {
+                if (post.approvedCalendarId !== undefined) {
+                    const event = eventsMap.get(post.approvedCalendarId);
+                    if (event === undefined && post.approvedStart !== undefined && post.approvedEnd !== undefined) {
+                        await _addApprovedEvent(setting.calendarId, post);
+                    } else if (event !== undefined) {
+                        eventsMap.delete(event.id);
+                    }
+                } else if (post.approvedStart !== undefined && post.approvedEnd !== undefined) {
                     await _addApprovedEvent(setting.calendarId, post);
-                } else if (event !== undefined) {
-                    eventsMap.delete(event.id);
                 }
-            } else if (post.approvedStart !== undefined && post.approvedEnd !== undefined) {
-                await _addApprovedEvent(setting.calendarId, post);
+
+                await transaction.save(post);
+                bar.tick();
             }
 
-            await transaction.save(post);
+            bar.terminate();
         }
 
-        // If there are posts that are not in the database, delete the event
-        for (let event of eventsMap.values()) {
-            // If there are events that are not in the database, delete the event
-            await removeEvent(setting.calendarId, event.id);
-            await transaction.getRepository(Event).remove(event);
+        if (eventsMap.size > 0) {
+            const bar = new ProgressBar("[:bar] :current/:total (:percent) :etas", {
+                total: eventsMap.size,
+                width: 20,
+            });
+
+            // If there are posts that are not in the database, delete the event
+            for (let event of eventsMap.values()) {
+                // If there are events that are not in the database, delete the event
+                await removeEvent(setting.calendarId, event.id);
+                await transaction.getRepository(Event).remove(event);
+                bar.tick();
+            }
+
+            bar.terminate();
         }
     });
 
@@ -194,21 +214,21 @@ const init = async () => {
 };
 
 const run = async (calendarId: string) => {
-    console.log("Start syncing posts...");
+    console.log(`${(new Date()).toLocaleString()} > Start syncing posts...`);
 
     const dbPosts = new Map<number, Post>();
     for (let post of await db.postRepository.find({})) {
         dbPosts.set(post.id, post);
     }
 
-    console.log("Get all posts...");
+    console.log("Getting all posts...");
     let posts = await getAllPosts();
     console.log(`Got ${posts.length} posts`);
     posts = posts.filter((post) => {
         const tempPost = mapper.convertPostToTemporaryModel(post);
         const model = dbPosts.get(tempPost.id);
 
-        let result = model === undefined || model.contentHash !== tempPost.contentHash;
+        let result = model === undefined || model.contentHash !== tempPost.contentHash || model.attachmentHash !== tempPost.attachmentHash;
         if (!result) {
             dbPosts.delete(tempPost.id);
         }
@@ -217,37 +237,26 @@ const run = async (calendarId: string) => {
 
     if (posts.length > 0) {
         console.log(`Processing ${posts.length} posts...`);
-        const bar = new ProgressBar("[:bar] :percent :etas", {
+        let bar = new ProgressBar("[:bar] :current/:total (:percent) :etas", {
             total: posts.length,
             width: 20,
         });
         bar.render();
         const postModels: Post[] = [];
-        let tmpPostModels: RawPostType[] = [];
-        let size = 0;
-        for (let i = 0; i < posts.length; i++) {
-            const post = posts[i];
-            if (size + post.content.length > 6000 || i + 1 === posts.length) {
-                if (i + 1 === posts.length) {
-                    tmpPostModels.push(post);
-                }
-
-                const tmpPosts = await mapper.convertPostsToModel(tmpPostModels);
-                postModels.push(...tmpPosts);
-                for (let j = 0; j < tmpPostModels.length; j++) {
-                    bar.tick();
-                }
-
-                size = 0;
-                tmpPostModels = [];
-            }
-
-            size += post.content.length;
-            tmpPostModels.push(post);
+        for (let post of posts) {
+            const model = await mapper.convertPostToModel(post);
+            postModels.push(model);
+            bar.tick();
         }
         bar.terminate();
         console.log("Extracted all posts");
 
+        console.log("Registering schedule...");
+        bar = new ProgressBar("[:bar] :current/:total (:percent) :etas", {
+            total: postModels.length,
+            width: 20,
+        });
+        bar.render();
         for (let post of postModels) {
             const model = dbPosts.get(post.id);
             dbPosts.delete(post.id);
@@ -318,6 +327,7 @@ const run = async (calendarId: string) => {
                     }
                 });
             }
+            bar.tick();
         }
     } else {
         console.log("No new posts");
@@ -345,9 +355,11 @@ const run = async (calendarId: string) => {
 
     await run(calendarId);
 
-    let task = cron.schedule("0 */6 * * *", () => run(calendarId));
-    task.start();
-    await new Promise(r => task.on("exit", r));
+    cron.schedule("0 0 * * *", () => run(calendarId));
+    cron.schedule("0 9 * * *", () => run(calendarId));
+    cron.schedule("0 12 * * *", () => run(calendarId));
+    cron.schedule("0 15 * * *", () => run(calendarId));
+    cron.schedule("0 18 * * *", () => run(calendarId));
 })().catch(console.log).finally(async () => {
     await db.dataSource.destroy();
     console.log("Database connection closed");
