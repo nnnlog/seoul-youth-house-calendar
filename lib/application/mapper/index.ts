@@ -75,7 +75,9 @@ export const convertPostToModel = async (post: RawPostType): Promise<Post> => {
         id: post.boardId,
         title: post.nttSj,
         memo: `모집 공고 정보<ul>${information.join("")}</ul>
-공급 현황<ul>${supply.length > 0 ? supply.join("") : "<li>알려지지 않음.</li>"}</ul>`,
+공급 현황<ul>${supply.length > 0 ? supply.join("") : "<li>알려지지 않음.</li>"}</ul>
+
+면책 사항<ul><li>이 정보는 Google의 Gemini를 이용하여 자동으로 처리되었습니다.</li><li>제공되는 정보는 정확하지 않을 수 있습니다.</li></ul>`,
         contentHash: sha256(post.content),
         attachmentHash: post.attachment ? sha256(post.attachment) : undefined,
         applicationStart: parsedScheduleInformation.application_start ?? undefined,
