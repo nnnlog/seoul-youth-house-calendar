@@ -30,16 +30,22 @@ export const createCalendar = async () => {
 
 export const updateCalendarSettings = async (calendarId: string) => {
     if (process.env.OWNER_GMAIL !== undefined) {
-        await calendar.acl.insert({
-            calendarId: calendarId,
-            requestBody: {
-                role: "owner",
-                scope: {
-                    type: "user",
-                    value: process.env.OWNER_GMAIL,
-                }
-            }
+        const acl = await calendar.acl.list({
+            calendarId,
         });
+
+        if (acl.data.items?.find(item => item.scope?.value === process.env.OWNER_GMAIL && item.role === "owner") === null) {
+            await calendar.acl.insert({
+                calendarId: calendarId,
+                requestBody: {
+                    role: "owner",
+                    scope: {
+                        type: "user",
+                        value: process.env.OWNER_GMAIL,
+                    }
+                }
+            });
+        }
     }
 
     await calendar.acl.insert({

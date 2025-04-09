@@ -77,8 +77,12 @@ const _addApprovedEvent = async (calendarId: string, post: Post, eventId?: strin
 const syncCalendar = async (setting: Setting) => {
     await db.dataSource.transaction(async (transaction) => {
         const {updatedEvents, removedEvents, syncToken} = await getAllEvents(setting.calendarId, setting.syncToken);
-        await transaction.getRepository(Event).save(updatedEvents);
-        await transaction.getRepository(Event).remove(removedEvents);
+        await transaction.getRepository(Event).save(updatedEvents, {
+            chunk: 500,
+        });
+        await transaction.getRepository(Event).remove(removedEvents, {
+            chunk: 500,
+        });
 
         setting.syncToken = syncToken;
         await transaction.getRepository(Setting).save(setting);
