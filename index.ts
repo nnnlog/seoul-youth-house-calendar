@@ -324,7 +324,7 @@ const run = async (calendarId: string) => {
                         } else {
                             await removeEvent(calendarId, event.id);
                             await db.eventRepository.remove(event);
-                            post.applicationCalendarId = undefined;
+                            post.approvedCalendarId = undefined;
                         }
                     } else {
                         console.log("Event(application) is null", post);
