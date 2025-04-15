@@ -5,9 +5,9 @@
   },
   "packageManager": "pnpm@10.7.1",
   "dependencies": {
-    "@google/genai": "^0.7.0",
+    "@google/genai": "^0.8.0",
     "cheerio": "^1.0.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "file-type": "^20.4.1",
     "googleapis": "^148.0.0",
     "node-cron": "^3.0.3",
@@ -16,7 +16,7 @@
     "typeorm-extension": "^3.7.0"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "@types/node-cron": "^3.0.11",
     "@types/progress": "^2.0.7",
     "typescript": "^5.8.3"
