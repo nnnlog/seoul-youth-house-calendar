@@ -360,9 +360,10 @@ const run = async (calendarId: string) => {
     await run(calendarId);
 
     cron.schedule("0 0 * * *", () => run(calendarId));
-    cron.schedule("0 9 * * *", () => run(calendarId));
+    cron.schedule("0 10 * * *", () => run(calendarId));
     cron.schedule("0 12 * * *", () => run(calendarId));
-    cron.schedule("0 15 * * *", () => run(calendarId));
+    cron.schedule("0 14 * * *", () => run(calendarId));
+    cron.schedule("0 16 * * *", () => run(calendarId));
     cron.schedule("0 18 * * *", () => run(calendarId));
 })().catch(async (e) => {
     console.error(e);
