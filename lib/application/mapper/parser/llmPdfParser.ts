@@ -1,4 +1,4 @@
-import {createPartFromUri, FileState, GoogleGenAI, Type} from '@google/genai';
+import {createPartFromUri, FileState, GenerateContentConfig, GoogleGenAI, Type} from '@google/genai';
 
 const apiKey = process.env.GEMINI_API_KEY!;
 const genAI = new GoogleGenAI({apiKey});
@@ -77,11 +77,17 @@ const systemPrompt = `청년안심주택 모집공고를 요약해서 다음 JSO
 - 홈페이지 주소에 한국어가 포함된 경우, 한국어를 인코딩하지 않고 그대로 출력합니다.
 - "null"을 출력하는 경우를 제외하고, 출력하는 주소는 http:// 또는 https://로 시작하여야 합니다.`;
 
-const generationConfig = {
+const generationConfig: GenerateContentConfig = {
+    // httpOptions: {
+    //     timeout: 1000 * 60 * 2, // 2 minutes
+    // },
+    // thinkingConfig: {
+    //     includeThoughts: false,
+    // },
     systemInstruction: systemPrompt,
     temperature: 0,
     topP: 1,
-    maxOutputTokens: 8192,
+    maxOutputTokens: 65536,
     responseModalities: [],
     responseMimeType: "application/json",
     responseSchema: {
@@ -265,7 +271,7 @@ export class LlmPdfParser {
                 })).text;
                 break;
             } catch (e) {
-                if (e instanceof Error && (e.toString().indexOf("429 Too Many Requests") > -1 || e.toString().indexOf("The model is overloaded") > -1)) {
+                if (e instanceof Error && (e.toString().indexOf("429 Too Many Requests") > -1 || e.toString().indexOf("The model is overloaded") > -1 || e.toString().indexOf("The operation was cancelled") > -1)) {
                     await new Promise(resolve => setTimeout(resolve, 5 * 1000));
                     continue;
                 }

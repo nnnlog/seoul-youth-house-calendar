@@ -68,6 +68,9 @@ const systemPrompt = `청년 안심 주택의 공고의 내용이 입력되면, 
 - 서류심사 대상자 일정을 확인할 수 없으므로 각 값을 "null"로 설정합니다.`;
 
 const generationConfig = {
+    // thinkingConfig: {
+    //     includeThoughts: false,
+    // },
     systemInstruction: systemPrompt,
     temperature: 0,
     topP: 0.95,
@@ -122,7 +125,7 @@ export class LlmScheduleParser {
                 })).text;
                 break;
             } catch (e) {
-                if (e instanceof Error && (e.toString().indexOf("429 Too Many Requests") > -1 || e.toString().indexOf("The model is overloaded") > -1)) {
+                if (e instanceof Error && (e.toString().indexOf("429 Too Many Requests") > -1 || e.toString().indexOf("The model is overloaded") > -1 || e.toString().indexOf("The operation was cancelled") > -1)) {
                     await new Promise(resolve => setTimeout(resolve, 5 * 1000));
                     continue;
                 }

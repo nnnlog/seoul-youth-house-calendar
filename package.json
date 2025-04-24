@@ -1,11 +1,13 @@
 {
   "name": "seoul-youth-house-calendar",
   "author": {
-    "name": "solrin"
+    "name": "solrin",
+    "email": "me@nlog.dev",
+    "url": "https://nlog.dev"
   },
-  "packageManager": "pnpm@10.7.1",
+  "packageManager": "pnpm@10.9.0",
   "dependencies": {
-    "@google/genai": "^0.8.0",
+    "@google/genai": "^0.9.0",
     "cheerio": "^1.0.0",
     "dotenv": "^16.5.0",
     "file-type": "^20.4.1",
@@ -13,7 +15,7 @@
     "node-cron": "^3.0.3",
     "progress": "^2.0.3",
     "typeorm": "^0.3.22",
-    "typeorm-extension": "^3.7.0"
+    "typeorm-extension": "^3.7.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.1",
