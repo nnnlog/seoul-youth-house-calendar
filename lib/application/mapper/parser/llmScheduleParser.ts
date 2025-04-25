@@ -142,11 +142,23 @@ export class LlmScheduleParser {
             approved: { start: string | "null", end: string | "null" },
         };
 
-        return {
+        const parsed = {
             application_start: result.application.start !== "null" ? new Date(result.application.start) : null,
             application_end: result.application.end !== "null" ? new Date(result.application.end) : null,
             approved_start: result.approved.start !== "null" ? new Date(result.approved.start) : null,
             approved_end: result.approved.end !== "null" ? new Date(result.approved.end) : null,
         };
+
+        if (parsed.application_start !== null && parsed.application_end !== null && parsed.application_start.getTime() > parsed.application_end.getTime()) {
+            parsed.application_start = null;
+            parsed.application_end = null;
+        }
+
+        if (parsed.approved_start !== null && parsed.approved_end !== null && parsed.approved_start.getTime() > parsed.approved_end.getTime()) {
+            parsed.approved_start = null;
+            parsed.approved_end = null;
+        }
+
+        return parsed;
     }
 }
