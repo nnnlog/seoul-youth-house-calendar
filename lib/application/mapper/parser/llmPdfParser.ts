@@ -250,7 +250,7 @@ export class LlmPdfParser {
             config: {
                 mimeType: "application/pdf",
             },
-            file: new Blob([content]),
+            file: new Blob([new Uint8Array(content)]),
         });
 
         while (attachment.state !== FileState.ACTIVE) {
