@@ -1,4 +1,4 @@
-import {GoogleGenAI, Type} from '@google/genai';
+import {GenerateContentConfig, GoogleGenAI, Type} from '@google/genai';
 
 const apiKey = process.env.GEMINI_API_KEY!;
 const genAI = new GoogleGenAI({apiKey});
@@ -67,10 +67,10 @@ const systemPrompt = `청년 안심 주택의 공고의 내용이 입력되면, 
 - 각각 청약 시작/종료 일정을 확인할 수 없으므로, 각 값을 "null"로 설정합니다.
 - 서류심사 대상자 일정을 확인할 수 없으므로 각 값을 "null"로 설정합니다.`;
 
-const generationConfig = {
-    // thinkingConfig: {
-    //     includeThoughts: false,
-    // },
+const generationConfig: GenerateContentConfig = {
+    thinkingConfig: {
+        includeThoughts: true,
+    },
     systemInstruction: systemPrompt,
     temperature: 0,
     topP: 0.95,
@@ -119,7 +119,7 @@ export class LlmScheduleParser {
         while (true) {
             try {
                 response = (await genAI.models.generateContent({
-                    model: "gemini-2.0-flash",
+                    model: "gemini-2.5-flash",
                     config: generationConfig,
                     contents: content,
                 })).text;

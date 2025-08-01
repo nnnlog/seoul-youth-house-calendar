@@ -81,9 +81,9 @@ const generationConfig: GenerateContentConfig = {
     // httpOptions: {
     //     timeout: 1000 * 60 * 2, // 2 minutes
     // },
-    // thinkingConfig: {
-    //     includeThoughts: false,
-    // },
+    thinkingConfig: {
+        includeThoughts: true,
+    },
     systemInstruction: systemPrompt,
     temperature: 0,
     topP: 1,
@@ -265,7 +265,7 @@ export class LlmPdfParser {
         while (true) {
             try {
                 response = (await genAI.models.generateContent({
-                    model: "gemini-2.0-flash",
+                    model: "gemini-2.5-flash",
                     config: generationConfig,
                     contents: createPartFromUri(attachment.uri!, attachment.mimeType!),
                 })).text;

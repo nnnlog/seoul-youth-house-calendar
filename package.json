@@ -7,21 +7,21 @@
   },
   "packageManager": "pnpm@10.9.0",
   "dependencies": {
-    "@google/genai": "^1.4.0",
-    "cheerio": "^1.0.0",
-    "dotenv": "^16.5.0",
+    "@google/genai": "^1.12.0",
+    "cheerio": "^1.1.2",
+    "dotenv": "^17.2.1",
     "file-type": "^21.0.0",
-    "googleapis": "^150.0.1",
-    "node-cron": "^4.1.0",
+    "googleapis": "^154.1.0",
+    "node-cron": "^4.2.1",
     "progress": "^2.0.3",
-    "typeorm": "^0.3.24",
+    "typeorm": "^0.3.25",
     "typeorm-extension": "^3.7.1"
   },
   "devDependencies": {
-    "@types/node": "^22.15.30",
+    "@types/node": "^24.1.0",
     "@types/node-cron": "^3.0.11",
     "@types/progress": "^2.0.7",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [

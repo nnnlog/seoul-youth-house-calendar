@@ -17,6 +17,7 @@ import getAllPosts from "./lib/adaptor/crawl/getAllPosts.js";
 import {Event} from "./lib/application/type/db/event.js";
 import {Setting} from "./lib/application/type/db/setting.js";
 import {Post} from "./lib/application/type/db/post.js";
+import {BatchQueue} from "./lib/application/queue/batchQueue.js";
 
 const _addApplicationEvent = async (calendarId: string, post: Post, eventId?: string) => {
     if (!post.applicationStart || !post.applicationEnd) return null;
@@ -246,12 +247,17 @@ const run = async (calendarId: string) => {
             width: 20,
         });
         bar.render();
+        const batchQueue = new BatchQueue(20);
         const postModels: Post[] = [];
         for (let post of posts) {
-            const model = await mapper.convertPostToModel(post);
-            postModels.push(model);
-            bar.tick();
+            const model = (() => mapper.convertPostToModel(post).then((ret) => {
+                bar.tick();
+                postModels.push(ret);
+            }));
+            batchQueue.addTask(model);
+            // postModels.push(model);
         }
+        await batchQueue.run();
         bar.terminate();
         console.log("Extracted all posts");
 
