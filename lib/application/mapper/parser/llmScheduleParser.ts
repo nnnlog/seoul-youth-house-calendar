@@ -125,7 +125,9 @@ export class LlmScheduleParser {
                 })).text;
                 break;
             } catch (e) {
-                if (e instanceof Error && (e.toString().indexOf("429 Too Many Requests") > -1 || e.toString().indexOf("The model is overloaded") > -1 || e.toString().indexOf("The operation was cancelled") > -1)) {
+                console.log(e);
+                console.log(content);
+                if (e instanceof Error && (e.toString().indexOf("429 Too Many Requests") > -1 || e.toString().indexOf("The model is overloaded") > -1 || e.toString().indexOf("The operation was cancelled") > -1 || e.toString().indexOf("An internal error has occurred") > -1)) {
                     await new Promise(resolve => setTimeout(resolve, 5 * 1000));
                     continue;
                 }
