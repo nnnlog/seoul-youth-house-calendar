@@ -265,7 +265,7 @@ export class LlmPdfParser {
         while (true) {
             try {
                 response = (await genAI.models.generateContent({
-                    model: "gemini-3-pro-preview",
+                    model: "gemini-2.5-pro",
                     config: generationConfig,
                     contents: createPartFromUri(attachment.uri!, attachment.mimeType!),
                 })).text;

@@ -119,7 +119,7 @@ export class LlmScheduleParser {
         while (true) {
             try {
                 response = (await genAI.models.generateContent({
-                    model: "gemini-3-pro-preview",
+                    model: "gemini-2.5-pro",
                     config: generationConfig,
                     contents: content,
                 })).text;
