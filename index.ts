@@ -1,11 +1,9 @@
-import "./lib/application/config"
+import "./lib/application/config";
 
 import cron from "node-cron";
 import * as process from "node:process";
 import ProgressBar from "progress";
 
-import db from "./lib/adaptor/db/index.js";
-import * as mapper from "./lib/application/mapper/index.js";
 import {
     addEvent,
     createCalendar,
@@ -14,10 +12,12 @@ import {
     updateCalendarSettings, updateEvent
 } from "./lib/adaptor/calendar/index.js";
 import getAllPosts from "./lib/adaptor/crawl/getAllPosts.js";
-import {Event} from "./lib/application/type/db/event.js";
-import {Setting} from "./lib/application/type/db/setting.js";
-import {Post} from "./lib/application/type/db/post.js";
+import db from "./lib/adaptor/db/index.js";
+import * as mapper from "./lib/application/mapper/index.js";
 import {BatchQueue} from "./lib/application/queue/batchQueue.js";
+import {Event} from "./lib/application/type/db/event.js";
+import {Post} from "./lib/application/type/db/post.js";
+import {Setting} from "./lib/application/type/db/setting.js";
 
 const _addApplicationEvent = async (calendarId: string, post: Post, eventId?: string) => {
     if (!post.applicationStart || !post.applicationEnd) return null;
@@ -77,7 +77,19 @@ const _addApprovedEvent = async (calendarId: string, post: Post, eventId?: strin
 
 const syncCalendar = async (setting: Setting) => {
     await db.dataSource.transaction(async (transaction) => {
-        const {updatedEvents, removedEvents, syncToken} = await getAllEvents(setting.calendarId, setting.syncToken);
+        let eventsResult;
+        try {
+            eventsResult = await getAllEvents(setting.calendarId, setting.syncToken);
+        } catch (e: any) {
+            if (e.code === "410" || e.response?.status === 410 || e.message?.includes("Sync token is no longer valid")) {
+                console.log("Sync token is no longer valid, performing full sync...");
+                eventsResult = await getAllEvents(setting.calendarId);
+            } else {
+                throw e;
+            }
+        }
+
+        const {updatedEvents, removedEvents, syncToken} = eventsResult;
         await transaction.getRepository(Event).save(updatedEvents, {
             chunk: 500,
         });

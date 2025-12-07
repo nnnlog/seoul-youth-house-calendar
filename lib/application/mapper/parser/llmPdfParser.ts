@@ -265,7 +265,7 @@ export class LlmPdfParser {
         while (true) {
             try {
                 response = (await genAI.models.generateContent({
-                    model: "gemini-2.5-pro",
+                    model: "gemini-3-pro-preview",
                     config: generationConfig,
                     contents: createPartFromUri(attachment.uri!, attachment.mimeType!),
                 })).text;
@@ -281,7 +281,7 @@ export class LlmPdfParser {
 
         genAI.files.delete({
             name: attachment.name!
-        }).catch(() => {});
+        }).catch(() => { });
 
         if (!response) {
             throw new Error("Failed to parse PDF content");
@@ -290,13 +290,13 @@ export class LlmPdfParser {
         let result = JSON.parse(response) as {
             supply: {
                 special: {
-                    youth: { type: string, supply: number }[],
-                    marry: { type: string, supply: number }[]
+                    youth: {type: string, supply: number}[],
+                    marry: {type: string, supply: number}[]
                 },
                 general: {
-                    youth: { type: string, supply: number }[],
-                    marry: { type: string, supply: number }[],
-                    all: { type: string, supply: number }[]
+                    youth: {type: string, supply: number}[],
+                    marry: {type: string, supply: number}[],
+                    all: {type: string, supply: number}[]
                 },
             },
             presentation: "HOMEPAGE" | "CONTACT" | "UNKNOWN",

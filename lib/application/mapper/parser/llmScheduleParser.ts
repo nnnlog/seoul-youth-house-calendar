@@ -119,7 +119,7 @@ export class LlmScheduleParser {
         while (true) {
             try {
                 response = (await genAI.models.generateContent({
-                    model: "gemini-2.5-pro",
+                    model: "gemini-3-pro-preview",
                     config: generationConfig,
                     contents: content,
                 })).text;
@@ -138,8 +138,8 @@ export class LlmScheduleParser {
         }
 
         const result = JSON.parse(response) as {
-            application: { start: string | "null", end: string | "null" },
-            approved: { start: string | "null", end: string | "null" },
+            application: {start: string | "null", end: string | "null"},
+            approved: {start: string | "null", end: string | "null"},
         };
 
         const parsed = {
