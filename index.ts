@@ -259,7 +259,7 @@ const run = async (calendarId: string) => {
             width: 20,
         });
         bar.render();
-        const batchQueue = new BatchQueue(Math.min(50, posts.length));
+        const batchQueue = new BatchQueue(Math.min(10, posts.length));
         const postModels: Post[] = [];
         for (let post of posts) {
             const model = (() => mapper.convertPostToModel(post).then((ret) => {
