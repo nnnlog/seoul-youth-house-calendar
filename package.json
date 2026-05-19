@@ -7,28 +7,26 @@
   },
   "packageManager": "pnpm@10.24.0",
   "dependencies": {
-    "@google/genai": "1.31.0",
-    "cheerio": "1.1.2",
-    "dotenv": "17.2.3",
-    "file-type": "21.1.1",
-    "googleapis": "167.0.0",
+    "@google/genai": "2.4.0",
+    "better-sqlite3": "12.2.0",
+    "cheerio": "1.2.0",
+    "dotenv": "17.4.2",
+    "file-type": "22.0.1",
+    "googleapis": "171.4.0",
     "node-cron": "4.2.1",
     "progress": "2.0.3",
-    "typeorm": "0.3.28",
-    "typeorm-extension": "3.7.2"
+    "typeorm": "1.0.0"
   },
   "devDependencies": {
-    "@types/node": "24.10.1",
+    "@types/better-sqlite3": "7.6.13",
+    "@types/node": "25.9.0",
     "@types/node-cron": "3.0.11",
     "@types/progress": "2.0.7",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
   },
   "pnpm": {
-    "ignoredBuiltDependencies": [
-      "sqlite3"
-    ],
     "onlyBuiltDependencies": [
-      "sqlite3"
+      "better-sqlite3"
     ]
   }
 }

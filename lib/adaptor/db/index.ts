@@ -4,7 +4,7 @@ import {Setting} from "../../application/type/db/setting.js";
 import {Event} from "../../application/type/db/event.js";
 
 const options: DataSourceOptions = {
-    type: "sqlite",
+    type: "better-sqlite3",
     database: "./db.sqlite",
     synchronize: true,
     entities: [

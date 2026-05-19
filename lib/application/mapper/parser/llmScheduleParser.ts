@@ -1,6 +1,7 @@
 import {GenerateContentConfig, GoogleGenAI, Type} from '@google/genai';
 
 const apiKey = process.env.GEMINI_API_KEY!;
+const model = process.env.GEMINI_MODEL_ID || "gemini-3-flash-preview";
 const genAI = new GoogleGenAI({apiKey});
 
 const systemPrompt = `청년 안심 주택의 공고의 내용이 입력되면, 해당 내용에서 청약 신청 일정과 서류심사 대상자 발표 일정을 알려주는 역할입니다.
@@ -119,7 +120,7 @@ export class LlmScheduleParser {
         while (true) {
             try {
                 response = (await genAI.models.generateContent({
-                    model: "gemini-2.5-pro",
+                    model,
                     config: generationConfig,
                     contents: content,
                 })).text;

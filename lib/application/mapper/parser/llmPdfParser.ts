@@ -1,6 +1,7 @@
 import {createPartFromUri, FileState, GenerateContentConfig, GoogleGenAI, Type} from '@google/genai';
 
 const apiKey = process.env.GEMINI_API_KEY!;
+const model = process.env.GEMINI_MODEL_ID || "gemini-3-flash-preview";
 const genAI = new GoogleGenAI({apiKey});
 
 const systemPrompt = `청년안심주택 모집공고를 요약해서 다음 JSON 포맷으로 제공하는 역할입니다.
@@ -265,7 +266,7 @@ export class LlmPdfParser {
         while (true) {
             try {
                 response = (await genAI.models.generateContent({
-                    model: "gemini-2.5-pro",
+                    model,
                     config: generationConfig,
                     contents: createPartFromUri(attachment.uri!, attachment.mimeType!),
                 })).text;
