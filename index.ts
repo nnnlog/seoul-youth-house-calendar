@@ -301,9 +301,9 @@ const run = async (calendarId: string) => {
 
                 await db.postRepository.save(post);
             } else {
-                await db.eventRepository.findOneBy({
+                await (post.applicationCalendarId !== undefined ? db.eventRepository.findOneBy({
                     id: post.applicationCalendarId,
-                }).then(async (event) => {
+                }) : Promise.resolve(null)).then(async (event) => {
                     if (event !== null) {
                         if (post.applicationStart !== undefined && post.applicationEnd !== undefined) {
                             event = new Event({
@@ -325,9 +325,9 @@ const run = async (calendarId: string) => {
                     }
                 });
 
-                await db.eventRepository.findOneBy({
+                await (post.approvedCalendarId !== undefined ? db.eventRepository.findOneBy({
                     id: post.approvedCalendarId,
-                }).then(async (event) => {
+                }) : Promise.resolve(null)).then(async (event) => {
                     if (event !== null) {
                         if (post.approvedStart !== undefined && post.approvedEnd !== undefined) {
                             event = new Event({
